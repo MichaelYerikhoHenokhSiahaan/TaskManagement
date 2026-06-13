@@ -44,8 +44,16 @@ RUN docker-php-ext-configure intl \
     xml \
     zip
 
-RUN rm -f /etc/apache2/mods-enabled/mpm_*.load /etc/apache2/mods-enabled/mpm_*.conf \
-    && a2enmod mpm_prefork rewrite
+RUN a2dismod mpm_event mpm_worker mpm_prefork || true \
+    && rm -f /etc/apache2/mods-enabled/mpm_event.load \
+              /etc/apache2/mods-enabled/mpm_event.conf \
+              /etc/apache2/mods-enabled/mpm_worker.load \
+              /etc/apache2/mods-enabled/mpm_worker.conf \
+              /etc/apache2/mods-enabled/mpm_prefork.load \
+              /etc/apache2/mods-enabled/mpm_prefork.conf \
+    && a2enmod mpm_prefork rewrite \
+    && apache2ctl -t -D DUMP_MODULES 2>&1 | grep -c 'mpm_' | xargs -I{} test {} -eq 1 \
+    && echo "MPM check passed: exactly one MPM loaded"
 
 RUN echo "Listen \${PORT:-80}" > /etc/apache2/ports.conf \
     && sed -ri -e 's/<VirtualHost \*:80>/<VirtualHost *:\${PORT:-80}>/' /etc/apache2/sites-available/000-default.conf
