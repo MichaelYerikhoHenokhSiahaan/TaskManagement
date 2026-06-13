@@ -9,6 +9,7 @@
 - Render will detect `render.yaml` and create:
   - web service: `task-management-app`
   - PostgreSQL: `task-management-db`
+- Web service uses Docker build from `Dockerfile` (stable for Laravel on Render).
 
 ## 3. Set required env vars
 After first sync, open your web service env vars and set:
