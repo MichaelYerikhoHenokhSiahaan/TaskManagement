@@ -39,3 +39,4 @@ php artisan optimize
 - Do not run `db:seed --force` on every deploy unless you intentionally want to refresh sample seeded data.
 - If you see `500` with key error, check `APP_KEY` is set.
 - If you see asset/manifest errors, trigger a redeploy (build runs `npm run build`).
+- If Docker build fails during `composer install`, use latest commit (Dockerfile includes required PHP extensions for Laravel).
