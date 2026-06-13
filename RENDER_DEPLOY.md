@@ -40,3 +40,7 @@ php artisan optimize
 - If you see `500` with key error, check `APP_KEY` is set.
 - If you see asset/manifest errors, trigger a redeploy (build runs `npm run build`).
 - If Docker build fails during `composer install`, use latest commit (Dockerfile includes required PHP extensions for Laravel).
+- Current Docker build uses multi-stage:
+  - Composer stage for `vendor`
+  - Node 20 stage for Vite assets
+  - Final Apache+PHP runtime stage
