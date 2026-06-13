@@ -44,7 +44,10 @@ RUN docker-php-ext-configure intl \
     xml \
     zip
 
-RUN a2enmod rewrite
+RUN a2dismod mpm_event && a2enmod mpm_prefork && a2enmod rewrite
+
+RUN echo "Listen \${PORT:-80}" > /etc/apache2/ports.conf \
+    && sed -ri -e 's/<VirtualHost \*:80>/<VirtualHost *:\${PORT:-80}>/' /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/html
 COPY . .
